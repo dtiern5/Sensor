@@ -1,6 +1,7 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AverageSensor implements Sensor {
 
@@ -50,5 +51,12 @@ public class AverageSensor implements Sensor {
         return sum / count;
 
     }
-
+    
+    public List<Integer> readings() {
+        List<Integer> readingsList = new ArrayList<>();
+        for (Sensor sensor : sensors) {
+            readingsList.add(sensor.read());
+        }
+        return readingsList;
+    }
 }
