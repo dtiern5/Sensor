@@ -5,14 +5,15 @@ import java.util.List;
 
 public class AverageSensor implements Sensor {
 
-    private ArrayList<Sensor> sensors;
-
-    public AverageSensor() {
-        this.sensors = new ArrayList<>();
-    }
+    private ArrayList<Sensor> sensors = new ArrayList<>();
+    private ArrayList<Integer> readingList = new ArrayList<>();
 
     public void addSensor(Sensor toAdd) {
         sensors.add(toAdd);
+    }
+
+    public List<Integer> readings() {
+        return this.readingList;
     }
 
     @Override
@@ -39,24 +40,14 @@ public class AverageSensor implements Sensor {
 
     @Override
     public int read() {
-        if (this.isOn() == false || sensors.isEmpty()) {
+        if (!this.isOn() || sensors.isEmpty()) {
             throw new IllegalStateException("Can't read unless all sensors are on");
         }
-        int sum = 0;
-        int count = 0;
-        for (Sensor sensor : sensors) {
-            sum += sensor.read();
-            count++;
-        }
-        return sum / count;
+        int average = this.sensors.stream()
+                .mapToInt(Sensor::read)
+                .sum() / this.sensors.size();
+        this.readingList.add(average);
+        return average;
 
-    }
-    
-    public List<Integer> readings() {
-        List<Integer> readingsList = new ArrayList<>();
-        for (Sensor sensor : sensors) {
-            readingsList.add(sensor.read());
-        }
-        return readingsList;
     }
 }
